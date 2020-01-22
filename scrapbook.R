@@ -1,20 +1,26 @@
 ## The complete journet dataset warm-up and idea scrapbook
 # install.packages("completejourney")
 library(completejourney)
-# Use "dplyr" to use filter function
 library(dplyr)
 
-## Example case study with John Smith -- household_id = 208
-#------------------------------------------------------------------------
-# Obtain demographic information from "demographics" table
-john.id <- 208
-str(demographics)
-john.df <- demographics %>% filter(household_id == john.id)
-# Check the campaigns he has received
-john.campaigns <- campaigns %>% filter(household_id == john.id)
-# Join with the campaign descriptions to get a better look
-john.campaigns <- campaigns %>% filter(household_id == john.id) %>%
-  left_join(., campaign_descriptions, by = "campaign_id")
-# Arrange John's campaigns by date
-john.campaigns %>% arrange(start_date)
+## Dataframe containing each household promotion state in given date
+## household_id - date - campaign 1 - campaign 2 - ...
 
+# Get all the household_ids
+transactions <- get_transactions()
+households_all <- unique(transactions$household_id)
+households_all <- sort(as.numeric(households_all), decreasing = FALSE)
+# Get all the distinct campaign starting dates
+campaign_start_dates <- unique(campaign_descriptions$start_date)
+# Get all the campaign_ids
+campaigns_all <- unique(campaign_descriptions$campaign_id)
+
+# Create the skeleton of the dataset
+k.households <- length(households_all)
+k.dates <- length(campaign_start_dates)
+k.campaigns <- length(campaigns_all)
+household_campaigns.df <- data.frame(matrix(NA, ncol = 2 + k.campaigns,
+                                            nrow = k.households * k.dates))
+campaign_names <- paste("campaign", campaigns_all, sep = "")
+col_names <- c("household_id", "date", campaign_names)
+names(household_campaigns.df) <- col_names
