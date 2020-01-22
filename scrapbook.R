@@ -30,30 +30,29 @@ names(household_campaigns) <- col_names
 household_campaigns$household_id <- rep(households_all, each = k.dates)
 household_campaigns$date <- rep(campaign_start_dates, times = k.households)
 
-## Example
-# Get all campaing information for household_id = 1
-for(i in 1:length(households_all)) {
+# Fill the active campaigns with 1s
+# Iterate through each household and get their specific campaign dataframes
+for(i in as.numeric(households_all)) {
   print(i)
   temp_id <- as.character(i)
   temp_df <- campaigns %>% filter(household_id == temp_id) %>%
     left_join(., campaign_descriptions, by="campaign_id") %>% arrange(start_date)
-  # Iterate through temp to get campaign dates one by one
-  for(j in 1:nrow(temp_df)) {
-    campaign_id <- temp_df[j, 1]$campaign_id
-    start_date <- temp_df[j, 4]$start_date
-    end_date <- temp_df[j, 5]$end_date
-    # Iterate through main dataset to write campaigns in respective columns
-    for(k in 1:nrow(household_campaigns)) {
-      temp_row <- household_campaigns[k,]
-      print(k)
-      if(temp_row$household_id == temp_id) {
-        # Check each row in main dataset for date comparision
-        if(temp_row$date >= start_date & temp_row$date < end_date) {
-          household_campaigns[k, as.numeric(campaign_id) + 2] <- 1
-        } else {
-          household_campaigns[k, as.numeric(campaign_id) + 2] <- 0
-        }
-      }
+  if(dim(temp_df)[1] > 0) {
+    # Iterate through temp_df to get campaign dates one by one per household
+    for(j in 1:nrow(temp_df)) {
+      campaign_id <- temp_df[j, 1]$campaign_id
+      start_date <- temp_df[j, 4]$start_date
+      end_date <- temp_df[j, 5]$end_date
+      # Assign values to main dataset
+      household_campaigns[household_campaigns$household_id == temp_id &
+                            household_campaigns$date >= start_date &
+                            household_campaigns$date < end_date,][campaign_id] <- 1
     }
   }
 }
+
+# Fill the NAs with 0s
+household_campaigns[is.na(household_campaigns)] <- 0
+
+# Write to csv for further use
+write.csv(household_campaigns,'household_campaigns.csv')
