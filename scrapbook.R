@@ -19,8 +19,8 @@ campaigns_all <- unique(campaign_descriptions$campaign_id)
 k.households <- length(households_all)
 k.dates <- length(campaign_start_dates)
 k.campaigns <- length(campaigns_all)
-household_campaigns.df <- data.frame(matrix(NA, ncol = 2 + k.campaigns,
+household_campaigns <- data.frame(matrix(NA, ncol = 2 + k.campaigns,
                                             nrow = k.households * k.dates))
 campaign_names <- paste("campaign", campaigns_all, sep = "")
 col_names <- c("household_id", "date", campaign_names)
-names(household_campaigns.df) <- col_names
+names(household_campaigns) <- col_names
