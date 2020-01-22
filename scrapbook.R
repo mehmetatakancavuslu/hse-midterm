@@ -11,15 +11,16 @@ transactions <- get_transactions()
 households_all <- unique(transactions$household_id)
 households_all <- sort(as.numeric(households_all), decreasing = FALSE)
 households_all <- as.character(households_all)
-# Get all the distinct campaign starting dates
-campaign_start_dates <- unique(campaign_descriptions$start_date)
-campaign_start_dates <- sort(campaign_start_dates, decreasing = FALSE)
+# # Get all the distinct  dates
+dates_all <- unique(as.Date(transactions$transaction_timestamp,
+                            format = "%Y-%m-%d"))
+dates_all <- sort(dates_all, decreasing = FALSE)
 # Get all the campaign_ids
 campaigns_all <- unique(campaign_descriptions$campaign_id)
 
 # Create the skeleton of the dataset
 k.households <- length(households_all)
-k.dates <- length(campaign_start_dates)
+k.dates <- length(dates_all)
 k.campaigns <- length(campaigns_all)
 household_campaigns <- data.frame(matrix(NA, ncol = 2 + k.campaigns,
                                             nrow = k.households * k.dates))
@@ -28,7 +29,7 @@ names(household_campaigns) <- col_names
 
 # Fill the dataframe, houseld_ids and dates
 household_campaigns$household_id <- rep(households_all, each = k.dates)
-household_campaigns$date <- rep(campaign_start_dates, times = k.households)
+household_campaigns$date <- rep(dates_all, times = k.households)
 
 # Fill the active campaigns with 1s
 # Iterate through each household and get their specific campaign dataframes
@@ -46,7 +47,7 @@ for(i in as.numeric(households_all)) {
       # Assign values to main dataset
       household_campaigns[household_campaigns$household_id == temp_id &
                             household_campaigns$date >= start_date &
-                            household_campaigns$date < end_date,][campaign_id] <- 1
+                            household_campaigns$date <= end_date,][campaign_id] <- 1
     }
   }
 }
