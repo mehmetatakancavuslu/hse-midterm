@@ -9,6 +9,10 @@
 
 library(completejourney)
 household_campaigns <- read.csv("household_campaigns.csv")
+household_campaigns$X <- NULL
+campaigns_all <- unique(campaign_descriptions$campaign_id)
+col_names <- c("household_id", "date", campaigns_all)
+names(household_campaigns) <- col_names
 
 # Create model_df for model building
 model_df <- data.frame(matrix(NA, ncol = 5,
@@ -34,3 +38,15 @@ model_df <- merge(model_df, household_sales, by = c("household_id", "date"),
 model_df$sales_value[is.na(model_df$sales_value)] <- 0
 model_df$amount_spent <- model_df$sales_value
 model_df$sales_value <- NULL
+
+# Set XYZ (treatment) date
+XYZ <- as.Date("2017-03-01")
+
+# Set period2 = 1 if date is after XYZ
+model_df$period2[model_df$date >= XYZ] <- 1
+model_df$period2[model_df$date < XYZ] <- 0
+
+## Set the treatment 1 if household is exposed to any campaign after XYZ
+# Create a new variable to check if any campaign is in progress in any given day
+household_campaigns$c <- ((rowSums(household_campaigns[,campaigns_all] == 1)
+                           > 0)* 1)
