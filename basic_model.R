@@ -13,6 +13,7 @@ household_campaigns$X <- NULL
 campaigns_all <- unique(campaign_descriptions$campaign_id)
 col_names <- c("household_id", "date", campaigns_all)
 names(household_campaigns) <- col_names
+household_campaigns$date <- as.Date(household_campaigns$date)
 
 # Create model_df for model building
 model_df <- data.frame(matrix(NA, ncol = 5,
@@ -50,3 +51,17 @@ model_df$period2[model_df$date < XYZ] <- 0
 # Create a new variable to check if any campaign is in progress in any given day
 household_campaigns$c <- ((rowSums(household_campaigns[,campaigns_all] == 1)
                            > 0)* 1)
+# Check if any campaign after given XYZ
+for (i in as.numeric(unique((model_df$household_id)))) {
+  print(i)
+  temp <- 1 %in% household_campaigns$c[household_campaigns$household_id ==
+                                 as.character(i) &
+                                 household_campaigns$date >= XYZ]
+  if(temp == TRUE) {
+    model_df$treatment[model_df$household_id == as.character(i)] <- 1
+  } else {
+    model_df$treatment[model_df$household_id == as.character(i)] <- 0
+  }
+}
+
+write.csv(model_df,'model_df.csv')
