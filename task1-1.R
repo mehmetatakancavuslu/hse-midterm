@@ -1,12 +1,14 @@
 library(dplyr)
 df <- read.csv("household_campaigns.csv")
 
-# Keep only non-zero rows
+# Keep only non-zero rows, remove rows that contains only zeros
 df_nonzeros <- df[rowSums(df[, 4:30])>0, ]
 
-# This is how many days in that year each household exposed to at least 1 coupon
+# This is how many coupon-days each household
 df_couponcounts <- df_nonzeros %>% group_by(household_id) %>%
-  summarise(coupon_count=n())
+  summarise(coupon_count=sum(X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12,
+                             X13, X14, X15, X16, X17, X18, X19, X20, X21, X22,
+                             X23, X24, X25, X26, X27))
 
 # Add also the other households with 0 coupon expose
 temp <- df %>% group_by(household_id) %>%
