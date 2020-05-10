@@ -12,11 +12,9 @@ variables with given date for each household and date
 
 **couponcounts2.csv -** Csv obtained from task1-3
 
------------------------------------------------
-
 ## TASKS
 
-## Task1
+### Task1
 
 **Task 1-1:** Divide households into two groups (Exposed to coupons vs not
 exposed). Dataframe shows households and their respective number of days they 
@@ -31,11 +29,11 @@ task1-1 it was counted as 1)
 
 **Task 1-4:** Check how those exposed to campaigns differ from those not exposed (demographics, amount spent, frequency, etc.) If there are differences in demographics it’s likely that the treatment was not randomized.
 
-## Task2
+### Task2
 
 Figure out whether there was a period at the beginning of the year, when a substantial number of households were not exposed to any campaigns (or very few), while they were later exposed to some campaigns. Try different thresholds. For example, let’s consider January-March 2017, numberwise It’s okay if eventually we have 200 households not exposed to campaigns at all, while we have 400 households not exposed then, but exposed.
 
-## MODEL 1
+### MODEL 1
 
 The basic model is then:
 
