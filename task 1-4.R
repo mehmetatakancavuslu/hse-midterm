@@ -1,4 +1,5 @@
-#---------------------------Task 1-2
+#---------------------------Task 1-4
+
 
 #install required libraries 
 library(dplyr)
@@ -8,7 +9,7 @@ library(arsenal)
 library(coin)
 
 #Read CSV with coupon counts created in Task 1-1
-df <- read.csv("couponcounts.csv")
+df2 <- read.csv("couponcounts2.csv")
 
 #Get all the demographic info 
 demographics <- demographics
@@ -16,37 +17,33 @@ demographics <- demographics
 
 # Separate HS high exposed and low exposed 
 separator <- 50
-df_low_exposed <- subset(df, coupon_count < separator)
-df_high_exposed <- subset(df, coupon_count >= separator)
+df_low_exposed2 <- subset(df2, coupon_count < separator)
+df_high_exposed2 <- subset(df2, coupon_count >= separator)
 
 # Create new df low exposed and high exposed  with demographics for analysis 
-demo_low_exposed <- merge(df_low_exposed, demographics)
-demo_high_exposed <-  merge(df_high_exposed, demographics)
+demo_low_exposed2 <- merge(df_low_exposed2, demographics)
+demo_high_exposed2 <-  merge(df_high_exposed2, demographics)
 
-summary(demo_low_exposed)
-summary(demo_high_exposed)
 
-# Create a new df for coupon counts distributed as High > 69 & Low < 69
-#in order to analyze them together in a table. 
-demo_all <-  merge(df, demographics)
-summary((demo_all))
+# Create a new df for coupon counts distributed as High > separator 
+# & Low < separator in order to analyze them together in a table. 
+demo_all2 <-  merge(df2, demographics)
 
-demo_all <- demo_all %>%
+demo_all2 <- demo_all2 %>%
   select(-household_id) %>%
   mutate(coupon_count = ifelse(coupon_count > separator, "high", "low")) %>%
   mutate(coupon_count = factor(coupon_count))
 
 
-
 # Create Descriotive table of the data separated by high and low exposed
-table_one <- tableby(coupon_count ~ ., data = demo_all)
-summary(table_one, title = "Demographic Data for High and Low exposure HH",
+table_three <- tableby(coupon_count ~ ., data = demo_all2)
+summary(table_three, title = "Demographic Data for High and Low exposure HH",
         text=TRUE)
 
 # Create a matrix version of demo_all in order to analyze by summary statistics 
 # the difference in the data. 
 
-demo_all_matrix <- data.matrix(demo_all, rownames.force = NA)
+demo_all_matrix2 <- data.matrix(demo_all2, rownames.force = NA)
 
 #Create controls for the summary statistics table for equivalence testing
 my_controls <- tableby.control(
@@ -63,27 +60,23 @@ my_controls <- tableby.control(
 
 #Create a new table displaying controlled variables. 
 
-table_two <- tableby(coupon_count ~ ., data = demo_all_matrix,
+table_four <- tableby(coupon_count ~ ., data = demo_all_matrix2,
                      control = my_controls)
-summary(table_two, title = "Demographic Data statistics differences for High 
-        and Low exposure HH TASK 1-2",
+summary(table_four, title = "Demographic Data statistics differences for High 
+        and Low exposure HH Task 1-4",
         text=TRUE)
 
 
 
-# Run Separate kruskal-wallis test to confirm P values
+# Run Separate kruskal-wallis test to confirm P values of the < 0.5 variables
 
-kruskal.test(x = demo_all$income, g = demo_all$coupon_count)
-kruskal.test(x = demo_all$household_size, g = demo_all$coupon_count)
-kruskal.test(x = demo_all$kids_count, g = demo_all$coupon_count)
+kruskal.test(x = demo_all2$income, g = demo_all2$coupon_count)
+kruskal.test(x = demo_all2$household_size, g = demo_all2$coupon_count)
+kruskal.test(x = demo_all2$kids_count, g = demo_all2$coupon_count)
 
 #our null hypothesis is that 2 samples are identical on variables p>0.05
 # we fail to reject that they are not identical. However for Income, Household size
 # and Kids count we can reject the null hypotesis as they have a considerably lower
 # p value than 0.05
-
-
-
-
 
 
