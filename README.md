@@ -1,11 +1,17 @@
 # hse-midterm
 HSE St.Petersburg - Midterm Thesis R Repository
 
+# SCRIPTS & CSVs
+
 **household_campaigns.R -** model to show campaign information (as 0 or 1) for each
 household in every given date
 
 **basic_model.R -** creates model with treatment, period and total_spent
 variables with given date for each household and date
+
+**couponcounts.csv -** Csv obtained from task1-1
+
+**couponcounts2.csv -** Csv obtained from task1-3
 
 -----------------------------------------------
 
@@ -14,9 +20,17 @@ variables with given date for each household and date
 ## Task1
 
 **Task 1-1:** Divide households into two groups (Exposed to coupons vs not
-exposed/exposed very low). 
+exposed). Dataframe shows households and their respective number of days they 
+are exposed at least one coupon campaign.
 
 **Task 1-2:** Check how those exposed to campaigns differ from those not exposed (demographics, amount spent, frequency, etc.) If there are differences in demographics it’s likely that the treatment was not randomized.
+
+**Task 1-3:** Divide households into two groups (Exposed to coupons vs not
+exposed). This time use coupon-days for each household, which means if one 
+household is exposed to 2 campaigns at the same day, it is counted as 2 (In the
+task1-1 it was counted as 1)
+
+**Task 1-4:** Check how those exposed to campaigns differ from those not exposed (demographics, amount spent, frequency, etc.) If there are differences in demographics it’s likely that the treatment was not randomized.
 
 ## Task2
 
