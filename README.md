@@ -1,7 +1,6 @@
-# hse-midterm
-HSE St.Petersburg - Midterm Thesis R Repository
+# Using Machine Learning Methods to Evaluate Factors Affecting the Performance of Marketing Campaigns: an Application to a Retailer's Transactional Data
 
-# SCRIPTS & CSVs
+## SCRIPTS & CSVs
 
 **household_campaigns.R -** model to show campaign information (as 0 or 1) for each
 household in every given date
@@ -15,7 +14,7 @@ variables with given date for each household and date
 
 -----------------------------------------------
 
-# TASKS
+## TASKS
 
 ## Task1
 
