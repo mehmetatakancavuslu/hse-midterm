@@ -16,9 +16,9 @@ dates_all <- sort(dates_all, decreasing = FALSE)
 # Create the skeleton of the dataset
 k.households <- length(households_all)
 k.dates <- length(dates_all)
-household_spendings <- data.frame(matrix(NA, ncol = 3,
+household_spendings <- data.frame(matrix(NA, ncol = 2,
                                          nrow = k.households * k.dates))
-col_names <- c("household_id", "date", "amount_spent")
+col_names <- c("household_id", "date")
 names(household_spendings) <- col_names
 
 # Fill the household_ids and dates
@@ -32,4 +32,17 @@ transactions$transaction_timestamp <- as.Date(
 )
 
 # Trim down transactions dataframe
-transactions[ ,c('column1', 'column2')] <- list(NULL)
+transactions[ ,c('store_id', 'basket_id', 'product_id', 'quantity',
+                 'retail_disc', 'coupon_disc', 'coupon_match_disc',
+                 'week')] <- list(NULL)
+names(transactions) <- c('household_id', 'amount_spent', 'date')
+# Add same household_id and date tuples together
+transactions <- transactions %>% group_by(household_id, date) %>% summarise(amount_spent = sum(amount_spent))
+
+# Merge transactions and household_spendings
+household_spendings <- merge(household_spendings, transactions, by=c("household_id","date"), all=T)
+
+# Make NAs 0
+household_spendings[is.na(household_spendings)] <- 0
+
+write.csv(household_spendings,'household_spendings.csv', row.names=FALSE)
