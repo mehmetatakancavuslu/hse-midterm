@@ -31,18 +31,26 @@ task1-1 it was counted as 1)
 
 ### Task2
 
-Figure out whether there was a period at the beginning of the year, when a substantial number of households were not exposed to any campaigns (or very few), while they were later exposed to some campaigns. Try different thresholds. For example, let’s consider January-March 2017, numberwise It’s okay if eventually we have 200 households not exposed to campaigns at all, while we have 400 households not exposed then, but exposed.
+Testing relation between coupon exposures and household spent in couple of
+different methods and models.
 
-### MODEL 1
+#### MODEL 1
 
-The basic model is then:
+Build a fixed effects regression model with fixed effects of customers (as many dummy variables as there are customers) and fixed effects of time periods (364-365 dummy variables). 
 
-treatment=1 for those who were exposed to some campaign after march 2017 but not before
+These fixed effects will capture household characteristics that do not change over time and time effects (like for example there was high promotional activity other than coupons on that day+any holiday related things, etc.).
 
-treatment=0 for those who were not exposed to any campaign at all
+In other words, it's like building a regression:
+lm(spend~customer_id+date+coupon1+coupon2+coupon3 etc.) 
 
-period2=1 for time>march 2017 and 0 otherwise
+Simpler model can have just a variable showing how many coupons were available to that customer on that day. In a more complex machine learning model you can include coupon types and more.
 
-amount spent on day i=b0+b1*period2+b2*treatment+b3*(period2*treatment)+control variables
+#### MODEL 2
 
-Frequencies/amounts purchases/average basket size/etc for January-march 2017 will be control variables.
+Look at how the number of coupons of different types (Type A, B and C) available to a customer “i” on day “t” impacts how much they spend on that day. If the coupon has been used, then the day of its use is the last day when it was available to the customer.
+
+Since the model has limitation (0 reflects not a zero purchase, but the fact that a person decided not to go shopping on this day), then not a regular regression is built, but a two-step one (at the first stage the probability of purchase is estimated, at the second - the purchase amount ) Thus, one of the suitable model types is the Tobit model with random slope coefficients.
+
+Random coefficients for the effect of each coupon type will be neglected this year, it can be done next year and it as a direction for future research. 
+
+
