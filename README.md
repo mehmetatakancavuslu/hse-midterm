@@ -3,7 +3,7 @@
 ## SCRIPTS & CSVs
 
 **household_campaigns.R -** model to show campaign information (as 0 or 1) for
-each household in every given date
+each household in every given date, in a panel format
 
 **basic_model.R -** creates model with treatment, period and total_spent
 variables with given date for each household and date
@@ -11,6 +11,9 @@ variables with given date for each household and date
 **couponcounts.csv -** Csv obtained from task1-1
 
 **couponcounts2.csv -** Csv obtained from task1-3
+
+**household_spendings.R -** datatable showing spent amount for each household
+for each day of the year, in a panel format
 
 ## TASKS
 
