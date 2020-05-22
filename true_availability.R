@@ -14,4 +14,5 @@ coupons_all$days<-as.numeric(difftime(coupons_all$end_date ,
                                       coupons_all$start_date,
                                       units = c("days")))
 expanded <-coupons_all[rep(row.names(coupons_all), coupons_all$days), ]
+
 coupons_all<-data.frame(expanded,date=expanded$start_date+(sequence(coupons_all$days)-1))
