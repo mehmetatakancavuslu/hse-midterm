@@ -1,3 +1,5 @@
+#---------------------------Model 1
+
 #install required libraries
 library(dplyr)
 library(tidyverse) # Modern data science library
@@ -8,37 +10,50 @@ library(gplots)    # Various programing tools for plotting data
 library(tseries)   # For timeseries analysis
 library(lmtest)
 library(AER)
-
+library(ggplot2)
+library(GGally)
+library(VGAM)
 
 #Read CSVs
 household_spendings <- read.csv("household_spendings.csv")
 household_campaigns <-  read.csv("household_campaigns.csv")
 household_campaigns <- household_campaigns[,-1]
 
-#Merge to final dataset
+#Merge to final dataset & removed unused DFs
 m1 <- merge(household_campaigns,household_spendings)
 rm("household_spendings","household_campaigns")
 
-#Change all variables to factors except amount spent
-m1[1:29] <- lapply(m1[1:29], factor)
-m1$amount_spent <- as.numeric(m1$amount_spent)
-str(m1)
+#Add total coupon count variable.
 
-#Exploratory data analysis
-scatterplot(amount_spent ~ date|household_id, data=m1)
-# Heterogenity between households
-plotmeans(amount_spent ~ household_id, data = m1)
-# Heterogenity between days
-plotmeans(amount_spent ~ date, data = m1)
+m1$coupon_count <- apply(m1[,c(3:29)], 1, sum)
+
+# Since RAM memory not enough, simplify model by keeping only coupon count
+m1 <- m1  %>% select(1,2,30,31)
+
+
+#Change all variables to factors except amount spent for  OLS & Tobit
+m1$date <- as.factor(m1$date)
+m1$household_id <- as.factor(m1$household_id)
+str(m1)
 
 
 #Basic OLS Model
-m_ols <-lm(amount_spent~household_id+date+X1+X2+X3+X4+X5+X6+X7+X8+X9+X10+X11+X12+
-             X13+X14+X15+X16+X17+X18+X19+X20+X21+X22+X23+X24+X25+X26+X27
+m_ols <-lm(amount_spent~household_id+date+coupon_count
            , data = m1)
-summary(ols)
+summary(m_ols)
 
-#Tobit
+#Try visualization
+Vis <- m_ols$fitted
+ggplot(m1, aes(x = coupon_count, y = amount_spent))+
+  geom_point() +
+  geom_smooth(method=lm)
 
-m_tobit <- tobit(amount_spent~household_id+date+X1+X2+X3+X4+X5+X6+X7+X8+X9+X10+X11+X12+
-          X13+X14+X15+X16+X17+X18+X19+X20+X21+X22+X23+X24+X25+X26+X27, data = m1)
+#Tobit with first option (Package AER)
+m_tobit1 <- tobit(amount_spent~household_id+date+coupon_count, data = m1)
+summary(m_tobit1)
+
+
+#tobit with second option  (VGAM Package )
+m_tobit2 <- vglm(amount_spent~household_id+date+coupon_count, tobit(Upper = Inf), data = m1)
+summary(m_tobit2)
+
