@@ -29,3 +29,15 @@ str(m1)
 m_tobit <- vglm(daily_amount_spent~household_id+week+coupons_per_day, tobit(Lower = 0), data = m1)
 summary(m_tobit)
 
+# Check if week is critical
+plotLowess(coupons_per_day~week, data=m1, col.lowess="red", lty.lowess=2)
+lw <- lowess(coupons_per_day~week, data=m1)
+
+# OLS model
+m_ols <-lm(daily_amount_spent~coupons_per_day, data = m1)
+summary(m_ols)
+yhat <- m_ols$fitted
+ggplot(m1, aes(x = coupons_per_day, y = daily_amount_spent))+
+  geom_point(position = "jitter") +
+  geom_smooth(method=lm)
+

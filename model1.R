@@ -38,14 +38,14 @@ str(m1)
 
 
 #Basic OLS Model
-m_ols <-lm(amount_spent~household_id+date+coupon_count
+m_ols <-lm(amount_spent~coupon_count
            , data = m1)
 summary(m_ols)
 
 #Try visualization
-Vis <- m_ols$fitted
+yhat <- m_ols$fitted
 ggplot(m1, aes(x = coupon_count, y = amount_spent))+
-  geom_point() +
+  geom_point(position = "jitter") +
   geom_smooth(method=lm)
 
 #Tobit with first option (Package AER)
