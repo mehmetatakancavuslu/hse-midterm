@@ -75,7 +75,7 @@ kruskal.test(x = demo_all2$household_size, g = demo_all2$coupon_count)
 kruskal.test(x = demo_all2$kids_count, g = demo_all2$coupon_count)
 
 #our null hypothesis is that 2 samples are identical on variables p>0.05
-# we fail to reject that they are not identical. However for Income, Household size
+# we fail to reject that they are not identical. However Household size
 # and Kids count we can reject the null hypotesis as they have a considerably lower
 # p value than 0.05
 
